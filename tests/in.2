@@ -1,0 +1,5 @@
+create_table table1 (key string, value int)
+insert table1 (key 'face', value 3)
+insert table1 (value 4, key 'toe')
+select table1 (key = 'face')
+select table1 (key != 'lol')
