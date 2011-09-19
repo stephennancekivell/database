@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from db_datatypes import *
+from db_opperators import *
 
 class statement:
     """
@@ -113,10 +114,10 @@ class expression(statement):
     def extractOpp(line):
         line = line.strip()
         if line[:1] == '=':
-            return '=', line[1:]
+            return oppEqual, line[1:]
         elif line[:2] == '!=':
-            return '!=', line[2:]
+            return oppNotEqual, line[2:]
         elif line[:2] == '&&':
-            return '&&', line[2:]
+            return oppAnd, line[2:]
         else:
             raise Exception('couldnt find opp' + line)
