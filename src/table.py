@@ -1,5 +1,12 @@
 #!/usr/bin/env python
 
+class table:
+    pass
+
+class column:
+    pass
+
+
 class datatype:
     """
     meta class for datatypes
