@@ -10,6 +10,8 @@ class statement:
     def build(line):
         lineSplit = line.split()
         if lineSplit[0] == 'create_table':
+            return createTableStatement(line)
+                
             table = lineSplit[1]
             cts = line[line.index('('):line.index(')')].split(',')
             column_type = map(lambda kv: kv.split(), cts)
@@ -31,9 +33,23 @@ class insertStatement(statement):
         self.variables = variables # a list of tuples [(column,value),..]
 
 class createTableStatement(statement):
+    statement_title = 'create_table'
     def __init__(self, table_name, column_type):
         self.table_name = table_name
         self.column_type = column_type # ordered_tuple like ((key, int), (name,string), ..)
+
+    def __init__(self, line):
+        print 'create'
+        print line
+        if line[:len(self.statement_title)] != self.statement_title:
+            raise Exception('not createTable command: '+line)
+        lineSplit = line[len(self.statement_title):].split()
+        tab = table(lineSplit[0])
+        cvs = line[line.index('(')+1:line.index(')')].split(',')
+        column_value = map(lambda kv: kv.split(), cvs)
+        cv2 = []
+        for c,v in column_value:
+            cv2.append(column(c,datatype.build(v)))
 
 class select(statement):
     def __init__(self,table, expression):
@@ -94,7 +110,7 @@ class expression(statement):
             lsplit = line.split()
             var = lsplit[0]
             try:
-                varn = number(var)
+                varn = integer(var)
             except ValueError:
                 var = lsplit[0]
 

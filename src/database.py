@@ -22,11 +22,18 @@ class dbase:
         elif x[0] == 'get':
            return self.db_get(x[1])
 
+    def execute_statement(self,statement1):
+        if isinstance(statement1, createTableStatement):
+            
+            print 'yay'
+        
+        pass
+
     def run_from(self,ioin,ioout):
         for line in ioin:
-            r =statement.build(line)
-            #r = self.parse_line(line)
-            ioout.write(str(r)+'\n')
+            st =statement.build(line)
+            self.execute_statement(st)
+            ioout.write(str(st)+'\n')
 
 if __name__=='__main__':
     db = dbase()
