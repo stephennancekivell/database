@@ -5,15 +5,11 @@ trying to make it fast should be fun.
 This db needs to be persistant, to disk.
 Could be some fun, file seeking here.
 
-key-value store.
-
 simple stdin-out interface, can be stateless, networked easily with nc. multiple connections, could be hard. cant use stdio for everything. async networking.
 
-probably just through stuff in a dict. Then update to disk.
+probably just throw stuff in a dict. Then update to disk.
 
-key-value will suck, wont be able to do complex 'select where' queries.
-
-dict of tables- table values where. each item can easily be tuple, stored by id in dict.
+dict of tables- table values where. each row can easily be tuple, stored by id in dict.
 
 ==Statements==
 
@@ -42,6 +38,3 @@ Kinda want to be able to replace sections without re writing the whole thing. Th
 This is where fixed size database scheames are nice.
 
 Crashing at any point needs to keep everything safe.
-
-
-

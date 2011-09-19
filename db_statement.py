@@ -16,7 +16,8 @@ class statement:
             cvs = line[line.index('('):line.index(')')].split(',')
             column_value = map(lambda kv: kv.split(), cvs)
             return insertStatement(table,column_value)
-
+        elif lineSplit[0] == 'select':
+            table = lineSplit[1]
 
 
 class insertStatement(statement):
@@ -37,3 +38,10 @@ class select(statement):
 class expression(statement):
     def __init__(self,value):
         self.value = value
+
+    @staticmethod
+    def build(line):
+        line = line.strip()
+        #if line[0] == '('
+
+        return None

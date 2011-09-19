@@ -25,7 +25,8 @@ class dbase:
 
     def run_from(self,ioin,ioout):
         for line in ioin:
-            r = self.parse_line(line)
+            r =statement.build(line)
+            #r = self.parse_line(line)
             ioout.write(str(r)+'\n')
 
 if __name__=='__main__':
