@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
-from db_datatypes import *
-from db_opperators import *
+from table import *
 
 class statement:
     """
@@ -54,7 +53,6 @@ class expression(statement):
 
     @staticmethod
     def extractExpression(line):
-        print "extractExpression",line
 
         line = line.strip()
         if line[0] =='(':
@@ -64,15 +62,12 @@ class expression(statement):
         
         #left
         left,line = expression.extractVar(line)
-        print "left", left
 
         #opp
         opp, line = expression.extractOpp(line)
-        print "opp",opp
 
         #right
         right,line = expression.extractVar(line)
-        print "right",right
 
         line = line.strip()
         if line[0]==')':
@@ -80,19 +75,16 @@ class expression(statement):
         else:
             raise Exception('why isnt there a )')
 
-        print "expression parsed", left,opp,right
         return expression(opp,left,right),line
 
     @staticmethod
     def extractVar(line):
         line = line.strip()
-        print 'extractVar ',line
         if line[0]=='(':
             var, line = expression.extractExpression(line)
             line =line.strip()
         elif line[0]=="\"":
             # its a 'string'
-            print "string", line
             line = line[1:] # advance the first "
             var = line[:line.index("\"")]
             var = string(var)
@@ -121,3 +113,14 @@ class expression(statement):
             return oppAnd, line[2:]
         else:
             raise Exception('couldnt find opp' + line)
+
+################# statements #################
+
+class oppEqual:
+    pass
+
+class oppNotEqual:
+    pass
+
+class oppAnd:
+    pass

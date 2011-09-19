@@ -2,7 +2,7 @@
 
 import sys
 from db_error import *
-from db_statement import *
+from statement import *
 
 store = {}
 
