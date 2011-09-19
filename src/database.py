@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import sys
-from db_error import *
 from statement import *
 
 store = {}
@@ -14,7 +13,7 @@ class dbase:
         if key in store:
             return store[key]
         else:
-            raise KeyNotFoundError(key)
+            raise Exception('key not found, '+key)
 
     def parse_line(self,line):
         x = line.split()
