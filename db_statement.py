@@ -18,7 +18,9 @@ class statement:
             return insertStatement(table,column_value)
         elif lineSplit[0] == 'select':
             table = lineSplit[1]
-
+            line = line[line.index(table)+len(table)+1:]
+            e = expression.build(line)
+            return e[0]
 
 class insertStatement(statement):
     def __init__(self,table, variables):
@@ -36,12 +38,75 @@ class select(statement):
         self.expression = expression
 
 class expression(statement):
-    def __init__(self,value):
-        self.value = value
+    def __init__(self,opp, left, right):
+        self.opp = opp
+        self.left = left
+        self.right = right
 
     @staticmethod
     def build(line):
-        line = line.strip()
-        #if line[0] == '('
+        print "build",line
 
-        return None
+        line = line.strip()
+        if line[0] =='(':
+            line = line[1:]
+        else:
+            raise Exception('way isnt there a (')
+        
+        #left
+        left,line = expression.extractVar(line)
+        print "left", left
+
+        #opp
+        opp, line = expression.extractOpp(line)
+        #opp = line.split()[0]
+        #line = line[line.index(opp)+len(opp)+1:]
+        print "opp",opp
+
+        #right
+        right,line = expression.extractVar(line)
+        print "right",right
+
+
+        line = line.strip()
+        if line[0]==')':
+            line = line[1:]
+        else:
+            raise Exception('why isnt there a )')
+
+        print "expression parsed", left,opp,right
+        return expression(opp,left,right),line
+
+    @staticmethod
+    def extractVar(line):
+        line = line.strip()
+        print 'extractVar ',line
+        if line[0]=='(':
+            var, line = expression.build(line)
+            line =line.strip()
+        elif line[0]=="\"":
+            # its a 'string'
+            print "string", line
+            line = line[1:] # advance the first "
+            var = line[:line.index("\"")]
+            line = line[len(var)+1:]
+            
+        else: #column or number
+            lsplit = line.split()
+            var = lsplit[0]
+            line = line[line.index(var)+len(var)+1:]
+
+        return var,line
+
+    @staticmethod
+    def extractOpp(line):
+        line = line.strip()
+        if line[:1] == '=':
+            return '=', line[1:]
+        elif line[:2] == '!=':
+            return '!=', line[2:]
+        elif line[:2] == '&&':
+            return '&&', line[2:]
+        else:
+            raise Exception('couldnt find opp' + line)
+        

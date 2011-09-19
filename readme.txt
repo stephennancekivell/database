@@ -30,7 +30,7 @@ TABLE string alpha numeric chars. up to len 200. no space
 
 == DATA TYPES ==
 INT 
-STRING up to 200 chars, enclosed in "", escaped with \ 
+STRING up to 200 chars, enclosed in "", not escaped at all
 
 ==File Format==
 Kinda want to be able to replace sections without re writing the whole thing. Thus needs to be binary ish.
@@ -38,3 +38,8 @@ Kinda want to be able to replace sections without re writing the whole thing. Th
 This is where fixed size database scheames are nice.
 
 Crashing at any point needs to keep everything safe.
+
+== road map ==
+* syntax command parse
+* store volatile
+* store persistant
