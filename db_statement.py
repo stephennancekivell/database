@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+
+from db_datatypes import *
 
 class statement:
     """
@@ -20,7 +23,7 @@ class statement:
             table = lineSplit[1]
             line = line[line.index(table)+len(table)+1:]
             e = expression.build(line)
-            return e[0]
+            return e
 
 class insertStatement(statement):
     def __init__(self,table, variables):
@@ -45,13 +48,18 @@ class expression(statement):
 
     @staticmethod
     def build(line):
-        print "build",line
+        return expression.extractExpression(line)[0]
+        
+
+    @staticmethod
+    def extractExpression(line):
+        print "extractExpression",line
 
         line = line.strip()
         if line[0] =='(':
             line = line[1:]
         else:
-            raise Exception('way isnt there a (')
+            raise Exception('why isnt there a (')
         
         #left
         left,line = expression.extractVar(line)
@@ -59,14 +67,11 @@ class expression(statement):
 
         #opp
         opp, line = expression.extractOpp(line)
-        #opp = line.split()[0]
-        #line = line[line.index(opp)+len(opp)+1:]
         print "opp",opp
 
         #right
         right,line = expression.extractVar(line)
         print "right",right
-
 
         line = line.strip()
         if line[0]==')':
@@ -82,18 +87,24 @@ class expression(statement):
         line = line.strip()
         print 'extractVar ',line
         if line[0]=='(':
-            var, line = expression.build(line)
+            var, line = expression.extractExpression(line)
             line =line.strip()
         elif line[0]=="\"":
             # its a 'string'
             print "string", line
             line = line[1:] # advance the first "
             var = line[:line.index("\"")]
+            var = string(var)
             line = line[len(var)+1:]
             
         else: #column or number
             lsplit = line.split()
             var = lsplit[0]
+            try:
+                varn = number(var)
+            except ValueError:
+                var = lsplit[0]
+
             line = line[line.index(var)+len(var)+1:]
 
         return var,line
@@ -109,4 +120,3 @@ class expression(statement):
             return '&&', line[2:]
         else:
             raise Exception('couldnt find opp' + line)
-        
