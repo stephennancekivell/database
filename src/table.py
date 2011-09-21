@@ -4,7 +4,7 @@ class table:
     def __init__(self,title, columns):
         self.title=title
         self.columns = columns # order list of column
-        self.data = {} # the row object entries
+        self.data = [] # the row object entries
 
     def __str__(self):
         return "<%s %d: %s>" % (self.__class__,id(self), self.title)

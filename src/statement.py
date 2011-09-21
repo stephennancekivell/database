@@ -17,7 +17,7 @@ class statement:
             table = lineSplit[1]
             line = line[line.index(table)+len(table)+1:]
             e = expression.build(line)
-            return e
+            return selectStatement(table,e)
 
 class insertStatement(statement):
     statement_title = 'insert'
@@ -58,7 +58,7 @@ class createTableStatement(statement):
 
         self.table = table(table_name, cv2)
 
-class select(statement):
+class selectStatement(statement):
     def __init__(self,table, expression):
         self.table = table
         self.expression = expression
@@ -73,23 +73,18 @@ class expression(statement):
     def build(line):
         return expression.extractExpression(line)[0]
         
-
     @staticmethod
     def extractExpression(line):
-
         line = line.strip()
         if line[0] =='(':
             line = line[1:]
         else:
             raise Exception('why isnt there a (')
         
-        #left
         left,line = expression.extractVar(line)
 
-        #opp
         opp, line = expression.extractOpp(line)
 
-        #right
         right,line = expression.extractVar(line)
 
         line = line.strip()
@@ -106,8 +101,7 @@ class expression(statement):
         if line[0]=='(':
             var, line = expression.extractExpression(line)
             line =line.strip()
-        elif line[0]=="\"":
-            # its a 'string'
+        elif line[0]=="\"": # its a 'string'
             line = line[1:] # advance the first "
             var = line[:line.index("\"")]
             var = string(var)
