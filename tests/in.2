@@ -1,6 +1,7 @@
 create_table table1 (key string, value int)
 insert table1 (key "face", value 3)
 insert table1 (value 4, key "toe")
+insert table1 (key "your mum", value 5)
 select table1 (key = "face")
 select table1 (key != "lol")
 select table1 ((key != "face") && (key != "lol"))
