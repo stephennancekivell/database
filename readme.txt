@@ -39,6 +39,10 @@ This is where fixed size database scheames are nice.
 
 Crashing at any point needs to keep everything safe.
 
+To make this crash safe i can use a tmp file, storing what update im about to make to the DB file. On load the DB can check for the tmp file.
+
+For the moment i wont consider the case where the database cannot fit in memory.
+
 == road map ==
 * syntax command parse
 * store volatile

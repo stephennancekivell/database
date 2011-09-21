@@ -11,16 +11,8 @@ class statement:
         lineSplit = line.split()
         if lineSplit[0] == 'create_table':
             return createTableStatement(line)
-                
-            table = lineSplit[1]
-            cts = line[line.index('('):line.index(')')].split(',')
-            column_type = map(lambda kv: kv.split(), cts)
-            return createTableStatement(table,column_type)
         elif lineSplit[0] == 'insert':
-            table = lineSplit[1]
-            cvs = line[line.index('('):line.index(')')].split(',')
-            column_value = map(lambda kv: kv.split(), cvs)
-            return insertStatement(table,column_value)
+            return insertStatement(line)
         elif lineSplit[0] == 'select':
             table = lineSplit[1]
             line = line[line.index(table)+len(table)+1:]
@@ -28,15 +20,28 @@ class statement:
             return e
 
 class insertStatement(statement):
-    def __init__(self,table, variables):
-        self.table = ""
-        self.variables = variables # a list of tuples [(column,value),..]
+    statement_title = 'insert'
+
+    def __init__(self,line):
+        if line[:len(self.statement_title)] != self.statement_title:
+            raise Exception('not insert command: '+line)
+
+        line = line[len(self.statement_title):]
+        lineSplit = line.split()
+        self.table = lineSplit[0]
+        line = line[line.index(self.table)+len(self.table)+1:]
+        cvs = line[line.index('(')+1:line.index(')')].split(',')
+        cv2 = []
+        for cv in cvs:
+            cv = cv.strip()
+            column = cv.split()[0]
+            value = cv[cv.index(column)+len(column):].strip()
+            #check datatype
+            cv2.append((column,value))
+        self.values =cv2
 
 class createTableStatement(statement):
     statement_title = 'create_table'
-    def __init__(self, table_name, column_type):
-        self.table_name = table_name
-        self.column_type = column_type # ordered_tuple like ((key, int), (name,string), ..)
 
     def __init__(self, line):
         print 'create'
@@ -44,12 +49,14 @@ class createTableStatement(statement):
         if line[:len(self.statement_title)] != self.statement_title:
             raise Exception('not createTable command: '+line)
         lineSplit = line[len(self.statement_title):].split()
-        tab = table(lineSplit[0])
+        table_name = lineSplit[0]
         cvs = line[line.index('(')+1:line.index(')')].split(',')
         column_value = map(lambda kv: kv.split(), cvs)
         cv2 = []
         for c,v in column_value:
             cv2.append(column(c,datatype.build(v)))
+
+        self.table = table(table_name, cv2)
 
 class select(statement):
     def __init__(self,table, expression):
