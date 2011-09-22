@@ -44,32 +44,61 @@ class dbase:
         #TODO write to file
 
     def select(self,statement1):
-        print statement1
-        print statement1.table
+        print "SELECT %s" % statement1
         table = store[statement1.table]
-        print statement1.expression
         expr = statement1.expression
-
         results = []
+        
+        # to use
+        #left,right = None,None
+        #lref,rref = True,True # refresh for each row.
 
-        print expr.left
-        print expr.right
+        #if isinstance(expr.right,datatype):
+        #    right = expr.right.getValue()
+        #    rref = False
+        #if isinstance(expr.left,datatype):
+        #    left = expr.left.getValue()
+        #    lref = False
 
         for row in table.data:
-            if expr.opp == oppEqual:
-                if isinstance(expr.left, string):
-                    pass
-                print [l.label for l in table.columns]
-                #if expr.left in [l in table.columns.labels]:
-                    
-                pass
-            elif isinstance(expr.opp,oppNotEqual):
-                pass
-            elif isinstance(expr.opp,oppAnd):
-                pass
-            #if matches row:
-                # results.append(row)
+            # so much can be optimized with this.
+            # column index's dont change.
+            # raw values dont change.
+            if dbase.expression_matches(expr.left,expr.right,expr.opp,row,table):
+                results.append(row)
 
+        return results #todo classify
+
+    @staticmethod
+    def expression_matches(leftV,rightV,opp,row,table):
+        """does the expression match the row """
+        if isinstance(leftV,expression):
+            leftV = dbase.expression_matches(leftV.left,leftV.right,leftV.opp,row,table)
+        if isinstance(rightV,expression):
+            rightV = dbase.expression_matches(rightV.left,rightV.right,rightV.opp,row,table)
+
+        if isinstance(leftV,datatype): leftV=leftV.getValue()
+        else:
+            i = table.columnIndex(leftV)
+            if i==None: raise Exception("not a column, leftV",leftV)
+            leftV = row[i]
+
+        if isinstance(rightV,datatype): rightV=rightV.getValue()
+        else:
+            i = table.columnIndex(rightV)
+            if i==None: raise Exception("not a column, rightV",rigthV)
+            rightV = row[i]
+
+        if opp == oppEqual:
+            matches = leftV==rightV
+        elif opp == oppNotEqual:
+            matches = leftV != rightV
+        elif opp == oppAnd:
+            matches = leftV & rightV
+        else:
+            raise Exception("opp not an opp?", opp)
+
+        return matches
 
     def execute_statement(self,statement1):
         if isinstance(statement1, createTableStatement):
@@ -77,7 +106,7 @@ class dbase:
         elif isinstance(statement1, insertStatement):
             self.insert(statement1)
         elif isinstance(statement1, selectStatement):
-            self.select(statement1)
+            print self.select(statement1)
 
     def run_from(self,ioin,ioout):
         for line in ioin:
