@@ -9,6 +9,13 @@ class table:
     def __str__(self):
         return "<%s %d: %s>" % (self.__class__,id(self), self.title)
 
+    def columnIndex(self,label):
+        for i in range(len(self.columns)):
+            if self.columns[i].label == label:
+                return i
+
+        return None
+
 class column:
     def __init__(self,label,datatype):
         self.label = label
@@ -33,6 +40,10 @@ class datatype:
         for t in types:
             if t.keyword==keyword:
                 return t(keyword)
+
+    def getValue():
+        """get the value as a raw python object"""
+        pass
  
 class string(datatype):
     keyword = 'string'
@@ -42,8 +53,13 @@ class string(datatype):
     def __len__(self):
         return len(self.value)
 
+    def getValue(self):
+        return self.value
+
 class integer(datatype):
     keyword='int'
     disk_size=4
     def __init__(self,value):
         self.value=value
+    def getValue(self):
+        return self.value
