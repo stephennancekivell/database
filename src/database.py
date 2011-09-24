@@ -44,7 +44,6 @@ class dbase:
         #TODO write to file
 
     def select(self,statement1):
-        print "SELECT %s" % statement1
         table = store[statement1.table]
         expr = statement1.expression
         results = []
@@ -64,6 +63,7 @@ class dbase:
             # so much can be optimized with this.
             # column index's dont change.
             # raw values dont change.
+            # gahh, recursive! how to not make redundant re-evalations here.
             if dbase.expression_matches(expr.left,expr.right,expr.opp,row,table):
                 results.append(row)
 
@@ -78,13 +78,13 @@ class dbase:
             rightV = dbase.expression_matches(rightV.left,rightV.right,rightV.opp,row,table)
 
         if isinstance(leftV,datatype): leftV=leftV.getValue()
-        else:
+        elif type(leftV) != bool:
             i = table.columnIndex(leftV)
             if i==None: raise Exception("not a column, leftV",leftV)
             leftV = row[i]
 
         if isinstance(rightV,datatype): rightV=rightV.getValue()
-        else:
+        elif type(rightV) != bool:
             i = table.columnIndex(rightV)
             if i==None: raise Exception("not a column, rightV",rigthV)
             rightV = row[i]
