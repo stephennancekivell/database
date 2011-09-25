@@ -2,23 +2,18 @@
 
 import sys
 from statement import *
+import result
 
 store = {}
 
 class dbase:
-    def db_get(self,key):
-        if key in store:
-            return store[key]
-        else:
-            raise Exception('key not found, '+key)
-
-    
     def create_table(self, statement1):
         if not isinstance(statement1, createTableStatement):
             raise Exception("need create table statement " +statement1)
 
         store[statement1.table.title] = statement1.table
         #TODO put to file
+        return result.success()
 
     def insert(self,statement1):
         if not isinstance(statement1,insertStatement):
@@ -42,6 +37,7 @@ class dbase:
         ins = tuple(ins)
         table.data.append(ins)
         #TODO write to file
+        return result.success()
 
     def select(self,statement1):
         table = store[statement1.table]
@@ -67,7 +63,7 @@ class dbase:
             if dbase.expression_matches(expr.left,expr.right,expr.opp,row,table):
                 results.append(row)
 
-        return results #todo classify
+        return result.select(results)
 
     @staticmethod
     def expression_matches(leftV,rightV,opp,row,table):
@@ -102,11 +98,11 @@ class dbase:
 
     def execute_statement(self,statement1):
         if isinstance(statement1, createTableStatement):
-            self.create_table(statement1)
+            return self.create_table(statement1)
         elif isinstance(statement1, insertStatement):
-            self.insert(statement1)
+            return self.insert(statement1)
         elif isinstance(statement1, selectStatement):
-            print self.select(statement1)
+            return self.select(statement1)
 
     def run_from(self,ioin,ioout):
         for line in ioin:
@@ -115,7 +111,7 @@ class dbase:
             ioout.write(self.run_line(line)+'\n')
 
     def run_line(self,line):
-        return str(self.execute_statement(statement.build(line)))
+        return self.execute_statement(statement.build(line))
 
 if __name__=='__main__':
     db = dbase()
