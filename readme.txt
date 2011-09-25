@@ -44,6 +44,12 @@ To make this crash safe i can use a tmp file, storing what update im about to ma
 For the moment i wont consider the case where the database cannot fit in memory.
 
 == road map ==
+
+===done===
 * syntax command parse
 * store volatile
+* select
+* structured results
+===todo===
 * store persistant
+* load from persistant
