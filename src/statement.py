@@ -44,8 +44,6 @@ class createTableStatement(statement):
     statement_title = 'create_table'
 
     def __init__(self, line):
-        print 'create'
-        print line
         if line[:len(self.statement_title)] != self.statement_title:
             raise Exception('not createTable command: '+line)
         lineSplit = line[len(self.statement_title):].split()
